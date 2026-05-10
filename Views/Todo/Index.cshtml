@@ -1,0 +1,55 @@
+﻿@model List<TodoApp.Models.TodoItem>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TODO App</title>
+    <style>
+            body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+            h1 { color: #333; }
+            form.add-form { display: flex; gap: 10px; margin-bottom: 20px; }
+            input[type="text"] { flex: 1; padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+            button { padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+            button:hover { background: #0056b3; }
+            ul { list-style: none; padding: 0; }
+            li { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; }
+            .done span { text-decoration: line-through; color: #999; }
+            .delete-btn { margin-left: auto; background: #dc3545; }
+            .delete-btn:hover { background: #a71d2a; }
+    </style>
+</head>
+<body>
+    <h1>📝 TODO List</h1>
+
+    <form class="add-form" method="post" action="/Todo/Create">
+        <input type="text" name="title" placeholder="Adaugă o sarcină..." required />
+        <button type="submit">Adaugă</button>
+    </form>
+
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li class="@(item.IsCompleted ? "done" : "")">
+                <form method="post" action="/Todo/Toggle/@item.Id">
+                    <input type="checkbox"
+                           onchange="this.form.submit()"
+                    @(item.IsCompleted ? "checked" : "") />
+                </form>
+
+                <span>@item.Title</span>
+                <small style="color:#aaa">@item.CreatedAt.ToString("dd.MM.yyyy")</small>
+
+                <form method="post" action="/Todo/Delete/@item.Id">
+                    <button class="delete-btn" type="submit">✕</button>
+                </form>
+            </li>
+        }
+    </ul>
+
+    @if (!Model.Any())
+    {
+        <p style="color:#aaa; text-align:center">Nu ai nicio sarcină. Adaugă una! 🎉</p>
+    }
+</body>
+</html>
